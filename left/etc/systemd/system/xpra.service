@@ -1,0 +1,21 @@
+[Unit]
+Description=Xpra System Server
+Documentation=https://xpra.org/trac/wiki/Service man:xpra
+After=network.target
+
+[Service]
+Type=simple
+EnvironmentFile=-/etc/sysconfig/xpra
+Environment=HOME=/root
+Environment=XDG_RUNTIME_DIR=/run/user/0
+Environment=XPRA_DEFAULT_VFB_RESOLUTION=3360x1050
+ExecStartPre=-/bin/mkdir /run/user/0
+ExecStartPre=-/bin/chmod 700 /run/user/0
+ExecStart=/usr/bin/xpra start-desktop --auth=file:filename=/root/.xpra.pass --bind-tcp=0.0.0.0:14500 --bind=auto --sharing=yes --start-child=/usr/local/bin/xpra-init.sh --pidfile=/run/xpra.pid --log-dir=/var/log --mdns=no --resize-display=no --daemon=no --video-encoders=ffmpeg :100
+#rely on SIGKILL which returns 128+15=143
+SuccessExitStatus=0 143
+Restart=on-abnormal
+PIDFile=/run/xpra.pid
+
+[Install]
+WantedBy=multi-user.target
