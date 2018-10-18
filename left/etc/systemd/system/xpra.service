@@ -6,16 +6,16 @@ After=network.target
 [Service]
 Type=simple
 EnvironmentFile=-/etc/sysconfig/xpra
-Environment=HOME=/root
-Environment=XDG_RUNTIME_DIR=/run/user/0
+User=odroid
+Environment=XDG_RUNTIME_DIR=/run/user/1000
 Environment=XPRA_DEFAULT_VFB_RESOLUTION=3360x1050
-ExecStartPre=-/bin/mkdir /run/user/0
-ExecStartPre=-/bin/chmod 700 /run/user/0
-ExecStart=/usr/bin/xpra start-desktop --auth=file:filename=/root/.xpra.pass --bind-tcp=0.0.0.0:14500 --bind=auto --sharing=yes --start-child=/usr/local/bin/xpra-init.sh --pidfile=/run/xpra.pid --log-dir=/var/log --mdns=no --resize-display=no --daemon=no --video-encoders=ffmpeg :100
+ExecStartPre=-/bin/mkdir /run/user/1000
+ExecStartPre=-/bin/chmod 700 /run/user/1000
+ExecStart=/usr/bin/xpra start-desktop --auth=file:filename=/home/odroid/.xpra.pass --bind-tcp=0.0.0.0:14500 --bind=auto --sharing=yes --start-child=/usr/bin/mate-session --pidfile=/run/user/1000/xpra.pid --log-dir=/run/user/1000/log --mdns=no --resize-display=no --daemon=no --encodings=rgb24,rgb32 --speed=100 --video-encoders=none :100
 #rely on SIGKILL which returns 128+15=143
 SuccessExitStatus=0 143
 Restart=on-abnormal
-PIDFile=/run/xpra.pid
+PIDFile=/run/user/1000/xpra.pid
 
 [Install]
 WantedBy=multi-user.target
